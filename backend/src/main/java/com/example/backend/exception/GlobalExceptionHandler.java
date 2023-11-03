@@ -20,6 +20,12 @@ public class GlobalExceptionHandler {
 		return exception.getMessage();
 	}
 
+	@ExceptionHandler(NoUserLoggedInException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	public String handleNoUserLoggedInException(NoUserLoggedInException exception) {
+		return exception.getMessage();
+	}
+
 	@ExceptionHandler(BindException.class)
 	public ResponseEntity<Map<String, String>> handleBindException(BindException exception) {
 		Map<String, String> body = new HashMap<>();

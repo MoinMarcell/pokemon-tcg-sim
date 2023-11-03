@@ -1,11 +1,13 @@
 package com.example.backend.security;
 
+import com.example.backend.exception.NoUserLoggedInException;
 import com.example.backend.exception.UsernameOrEmailAlreadyExistException;
 import com.example.backend.util.Argon2Service;
 import com.example.backend.util.TimeService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -37,6 +39,20 @@ public class AppUserService {
 				savedAppUser.getRole(),
 				savedAppUser.getRegistrationDate()
 		);
+	}
+
+	public AppUserResponse getLoggedInAppUser() {
+		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (principal instanceof AppUser appUserDetails) {
+			return new AppUserResponse(
+					appUserDetails.getId(),
+					appUserDetails.getUsername(),
+					appUserDetails.getEmail(),
+					appUserDetails.getRole(),
+					appUserDetails.getRegistrationDate()
+			);
+		}
+		throw new NoUserLoggedInException("No User Logged In");
 	}
 
 	private boolean existsAppUserByEmailOrUsername(String email, String username) {
