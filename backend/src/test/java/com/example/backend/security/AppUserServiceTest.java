@@ -15,7 +15,8 @@ class AppUserServiceTest {
 	private final AppUserRepository appUserRepository = mock(AppUserRepository.class);
 	private final Argon2Service argon2Service = mock(Argon2Service.class);
 	private final TimeService timeService = mock(TimeService.class);
-	private final AppUserService appUserService = new AppUserService(appUserRepository, argon2Service, timeService);
+	private final EmailMaskService emailMaskService = mock(EmailMaskService.class);
+	private final AppUserService appUserService = new AppUserService(appUserRepository, argon2Service, timeService, emailMaskService);
 
 	AppUserRequest appUserRequest = new AppUserRequest("username", "password", "email");
 	AppUser savedAppUser = new AppUser("id", "username", "password", "email", AppUserRole.USER, "registrationDate");
@@ -28,6 +29,7 @@ class AppUserServiceTest {
 		when(appUserRepository.save(any(AppUser.class))).thenReturn(savedAppUser);
 		when(timeService.getZonedDateTimeNow()).thenReturn("registrationDate");
 		when(argon2Service.encode(appUserRequest.password())).thenReturn("password");
+		when(emailMaskService.maskEmail(savedAppUser.getEmail())).thenReturn("email");
 
 		AppUserResponse actualAppUserResponse = appUserService.registerNewAppUser(appUserRequest);
 		// then
@@ -35,6 +37,7 @@ class AppUserServiceTest {
 		verify(appUserRepository, times(1)).save(any(AppUser.class));
 		verify(timeService, times(1)).getZonedDateTimeNow();
 		verify(argon2Service, times(1)).encode(appUserRequest.password());
+		verify(emailMaskService, times(1)).maskEmail(savedAppUser.getEmail());
 		assertEquals(expectedAppUserResponse, actualAppUserResponse);
 	}
 

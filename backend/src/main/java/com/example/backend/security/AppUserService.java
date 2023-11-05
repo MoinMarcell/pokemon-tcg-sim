@@ -17,6 +17,7 @@ public class AppUserService {
 	private final AppUserRepository appUserRepository;
 	private final Argon2Service argon2Service;
 	private final TimeService timeService;
+	private final EmailMaskService emailMaskService;
 
 
 	public AppUserResponse registerNewAppUser(@NotNull @Valid AppUserRequest appUserRequest) {
@@ -35,7 +36,7 @@ public class AppUserService {
 		return new AppUserResponse(
 				savedAppUser.getId(),
 				savedAppUser.getUsername(),
-				savedAppUser.getEmail(),
+				emailMaskService.maskEmail(savedAppUser.getEmail()),
 				savedAppUser.getRole(),
 				savedAppUser.getRegistrationDate()
 		);
@@ -47,7 +48,7 @@ public class AppUserService {
 			return new AppUserResponse(
 					appUserDetails.getId(),
 					appUserDetails.getUsername(),
-					appUserDetails.getEmail(),
+					emailMaskService.maskEmail(appUserDetails.getEmail()),
 					appUserDetails.getRole(),
 					appUserDetails.getRegistrationDate()
 			);
