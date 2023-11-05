@@ -5,6 +5,7 @@ import {Route, Routes, useNavigate} from "react-router-dom";
 import ProtectedRoutes from "./util/ProtectedRoutes.tsx";
 import Login from "./pages/Login.tsx";
 import PreRegistrationSuccess from "./protected/PreRegistrationSuccess.tsx";
+import Register from "./pages/Register.tsx";
 
 export default function App() {
     const [appUser, setAppUser] = useState<AppUser | undefined>(undefined);
@@ -40,7 +41,7 @@ export default function App() {
         <>
             <h3>Welcome to the Pokémon TCG Sim</h3>
             <Routes>
-                <Route path={"/"} element={<Login login={login}/>}/>
+                <Route path={"/"} element={<><Login login={login}/><Register/></>}/>
                 <Route element={<ProtectedRoutes appUser={appUser}/>}>
                     <Route path={"/success"} element={<PreRegistrationSuccess appUser={appUser}/>}/>
                 </Route>
