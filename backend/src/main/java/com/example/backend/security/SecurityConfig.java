@@ -30,13 +30,9 @@ public class SecurityConfig {
 								.requestMatchers("/api/v1/users/register").permitAll()
 								.anyRequest().authenticated()
 				)
-				.httpBasic(c -> {
-					c.init(http);
-					c.authenticationEntryPoint((request, response, authException) -> response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase()));
-				})
+				.httpBasic(c -> c.authenticationEntryPoint((request, response, authException) -> response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase())))
 				.sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
-				.formLogin(AbstractHttpConfigurer::disable)
-				.logout(c -> c.logoutUrl("/api/v1/auth/logout").permitAll());
+				.formLogin(AbstractHttpConfigurer::disable);
 		return http.build();
 	}
 

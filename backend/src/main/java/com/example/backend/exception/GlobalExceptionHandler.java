@@ -2,6 +2,7 @@ package com.example.backend.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -35,6 +36,18 @@ public class GlobalExceptionHandler {
 			body.put(fieldName, errorMessage);
 		});
 		return ResponseEntity.badRequest().body(body);
+	}
+
+	@ExceptionHandler(BadCredentialsException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	public String handleBadCredentialsException(BadCredentialsException exception) {
+		return exception.getMessage();
+	}
+
+	@ExceptionHandler(Exception.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public String handleException(Exception exception) {
+		return exception.getMessage();
 	}
 
 }
