@@ -3,9 +3,8 @@ import {AppUser} from "./models/AppUser.ts";
 import axios from "axios";
 import {Route, Routes, useNavigate} from "react-router-dom";
 import ProtectedRoutes from "./util/ProtectedRoutes.tsx";
-import Login from "./pages/Login.tsx";
 import PreRegistrationSuccess from "./protected/PreRegistrationSuccess.tsx";
-import Register from "./pages/Register.tsx";
+import LoginRegisterPage from "./pages/LoginRegisterPage.tsx";
 
 export default function App() {
     const [appUser, setAppUser] = useState<AppUser | undefined>(undefined);
@@ -38,14 +37,13 @@ export default function App() {
     }, [navigate]);
 
     return (
-        <>
-            <h3>Welcome to the Pokémon TCG Sim</h3>
+        <div id="app">
             <Routes>
-                <Route path={"/"} element={<><Login login={login}/><Register/></>}/>
+                <Route path={"/"} element={<LoginRegisterPage login={login}/>}/>
                 <Route element={<ProtectedRoutes appUser={appUser}/>}>
                     <Route path={"/success"} element={<PreRegistrationSuccess appUser={appUser}/>}/>
                 </Route>
             </Routes>
-        </>
+        </div>
     )
 }
