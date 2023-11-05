@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 class AppUserControllerTest {
+	private static final String BASE_URI = "/api/v1/users";
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -32,7 +33,7 @@ class AppUserControllerTest {
 		AppUserRequest appUserRequest = new AppUserRequest("test", "test1234", "test@test.de");
 		String appUserRequestJson = objectMapper.writeValueAsString(appUserRequest);
 
-		MvcResult mvcResult = mockMvc.perform(post("/api/v1/users/register")
+		MvcResult mvcResult = mockMvc.perform(post(BASE_URI + "/register")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(appUserRequestJson))
 				.andExpect(status().isCreated())
@@ -52,12 +53,12 @@ class AppUserControllerTest {
 		AppUserRequest appUserRequest = new AppUserRequest("test", "test1234", "test@test.de");
 		String appUserRequestJson = objectMapper.writeValueAsString(appUserRequest);
 
-		mockMvc.perform(post("/api/v1/users/register")
+		mockMvc.perform(post(BASE_URI + "/register")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(appUserRequestJson))
 				.andExpect(status().isCreated());
 
-		mockMvc.perform(post("/api/v1/users/register")
+		mockMvc.perform(post(BASE_URI + "/register")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(appUserRequestJson))
 				.andExpect(status().isBadRequest())
