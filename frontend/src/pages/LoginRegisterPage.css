@@ -1,27 +1,5 @@
-#login-register-page {
-    display: flex;
-    flex-direction: column;
-    background: black url("../assets/login-register-background.jpg") no-repeat fixed center center;
+.container {
+    background: url("../assets/login-register-background.jpg") no-repeat center center fixed;
     background-size: cover;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
     height: 100vh;
-    margin: 0;
-    padding: 0;
-}
-
-#login-register-page hr{
-    width: 80%;
-    border: 1px solid #000;
-}
-
-#login-register-page div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    width: 40%;
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 10px;
 }
