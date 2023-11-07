@@ -1,5 +1,7 @@
-import "./LoginRegisterPage.css";
+import {Box, Chip, Container, Divider} from "@mui/material";
 import Login from "../components/Login.tsx";
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import Register from "../components/Register.tsx";
 
 type LoginRegisterPageProps = {
@@ -8,15 +10,31 @@ type LoginRegisterPageProps = {
 
 export default function LoginRegisterPage(props: LoginRegisterPageProps) {
     return (
-        <main className="uk-container-expand uk-flex uk-flex-middle uk-flex-center uk-height-1-1">
-            <div
-                className="uk-background-secondary uk-card uk-card-default uk-card-body uk-width-1-2 uk-box-shadow-xlarge uk-border-rounded">
-                <h3 className="uk-card-title uk-text-primary">Login</h3>
-                <Login login={props.login}/>
-                <h3 className="uk-heading-line uk-text-center uk-text-primary"><span>or</span></h3>
-                <h3 className="uk-card-title uk-text-primary uk-margin-remove">Register</h3>
-                <Register/>
-            </div>
-        </main>
+        <Container
+            maxWidth={"lg"}
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "rgba(255, 255, 255, 0.8)",
+                borderRadius: "25px",
+                padding: "10px"
+            }}
+        >
+            <Box>
+                <Box>
+                    <Login login={props.login}/>
+                </Box>
+                <Divider variant="fullWidth" sx={{
+                    color: "black",
+                }}>
+                    <Chip icon={<ArrowDownwardIcon/>} label={<ArrowUpwardIcon/>}/>
+                </Divider>
+                <Box>
+                    <Register/>
+                </Box>
+            </Box>
+        </Container>
     );
 }

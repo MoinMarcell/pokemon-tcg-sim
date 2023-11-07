@@ -1,9 +1,14 @@
 import {AppUserRequest} from "../models/AppUserRequest.tsx";
-import {ChangeEvent, FormEvent, useState} from "react";
+import React, {ChangeEvent, FormEvent, useState} from "react";
 import axios from "axios";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {toast} from "react-toastify";
 import {CustomError} from "../models/CustomError.ts";
+import {Box, Button, FormControl, IconButton, Input, InputAdornment, InputLabel, TextField} from "@mui/material";
+import PersonIcon from "@mui/icons-material/Person";
+import PasswordIcon from "@mui/icons-material/Password";
+import EmailIcon from '@mui/icons-material/Email';
+import {Visibility, VisibilityOff} from "@mui/icons-material";
 
 export default function Register() {
     const navigate = useNavigate();
@@ -14,6 +19,13 @@ export default function Register() {
         email: "",
     });
     const [error, setError] = useState<CustomError | undefined>(undefined);
+    const [showPassword, setShowPassword] = React.useState(false);
+
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    };
 
     function handleChange(event: ChangeEvent<HTMLInputElement>) {
         setAppUserRequest({
@@ -31,79 +43,96 @@ export default function Register() {
             })
             .catch((e) => {
                 setError(e.response.data)
-                if(error?.email) {
+                if (error?.email) {
                     toast.error(error.email);
                 }
-                if(error?.username) {
+                if (error?.username) {
                     toast.error(error.username);
                 }
-                if(error?.password) {
+                if (error?.password) {
                     toast.error(error.password);
                 }
             });
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <div className="uk-inline uk-width-1-1">
-                    <label htmlFor="username"/>
-                    <Link to="" className="uk-form-icon" uk-icon="icon: user"></Link>
-                    <input
-                        className="uk-input uk-margin"
-                        type="text"
-                        id="username-register"
-                        name="username"
-                        autoComplete="new-username"
-                        placeholder="Username"
-                        onChange={handleChange}
+        <Box component={"form"} onSubmit={handleSubmit}>
+            <Box component={"div"} sx={{
+                margin: "10px",
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+            }}>
+                <TextField
+                    required
+                    autoComplete={"new-username"}
+                    label="Username"
+                    id="register-username"
+                    name="username"
+                    sx={{
+                        width: '25ch',
+                    }}
+                    onChange={handleChange}
+                    InputProps={{
+                        startAdornment:
+                            <InputAdornment position="start">
+                                <PersonIcon/>
+                            </InputAdornment>,
+                    }}
+                    variant="standard"
+                />
+                <FormControl sx={{width: '25ch'}} variant="standard">
+                    <InputLabel htmlFor="register-password">Password</InputLabel>
+                    <Input
                         required
-                        value={appUserRequest.username}
-                    />
-                </div>
-            </div>
-
-            <div>
-                <div className="uk-inline uk-width-1-1">
-                    <label htmlFor="password"/>
-                    <Link to="" className="uk-form-icon" uk-icon="icon: lock"></Link>
-                    <input
-                        className="uk-input uk-margin"
-                        type="password"
-                        id="password-register"
-                        name="password"
-                        autoComplete="new-password"
-                        placeholder="Password"
+                        autoComplete={"new-password"}
                         onChange={handleChange}
-                        required
-                        value={appUserRequest.password}
+                        name={"password"}
+                        id="register-password"
+                        type={showPassword ? 'text' : 'password'}
+                        startAdornment={
+                            <InputAdornment position="start">
+                                <PasswordIcon/>
+                            </InputAdornment>
+                        }
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={handleClickShowPassword}
+                                    onMouseDown={handleMouseDownPassword}
+                                >
+                                    {showPassword ? <VisibilityOff/> : <Visibility/>}
+                                </IconButton>
+                            </InputAdornment>
+                        }
                     />
-                </div>
-            </div>
-
-            <div>
-                <div className="uk-inline uk-width-1-1">
-                    <label htmlFor="email"/>
-                    <Link to="" className="uk-form-icon" uk-icon="icon: mail"></Link>
-                    <input
-                        className="uk-input uk-margin"
-                        type="email"
-                        id="email"
-                        name="email"
-                        autoComplete="new-email"
-                        placeholder="Email"
-                        onChange={handleChange}
-                        required
-                        value={appUserRequest.email}
-                    />
-                </div>
-            </div>
-
-            <div>
-                <div className="uk-inline uk-width-1-1">
-                    <input type="submit" value="Register" className="uk-button uk-button-primary uk-width-1-1"/>
-                </div>
-            </div>
-        </form>
+                </FormControl>
+                <TextField
+                    required
+                    autoComplete={"new-email"}
+                    label="Email"
+                    id="register-email"
+                    name="email"
+                    sx={{
+                        width: '25ch',
+                    }}
+                    onChange={handleChange}
+                    InputProps={{
+                        startAdornment:
+                            <InputAdornment position="start">
+                                <EmailIcon/>
+                            </InputAdornment>,
+                    }}
+                    variant="standard"
+                />
+                <Button type={"submit"} variant={"contained"} sx={{
+                    backgroundColor: "rgba(255, 255, 255, 0.8)",
+                    color: "black",
+                }}>
+                    Register
+                </Button>
+            </Box>
+        </Box>
     );
 }
