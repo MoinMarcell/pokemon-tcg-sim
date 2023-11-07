@@ -1,6 +1,7 @@
 import {AppUser} from "../models/AppUser.ts";
 import {Navigate, useNavigate} from "react-router-dom";
 import axios from "axios";
+import {toast} from "react-toastify";
 
 type PreRegistrationSuccessProps = {
     appUser: AppUser | undefined;
@@ -12,8 +13,10 @@ export default function PreRegistrationSuccess(props: Readonly<PreRegistrationSu
 
     function logout() {
         axios.post("/api/v1/auth/logout").then(() => {
+            toast.success("Logout successful!");
             navigate("/")
         }).catch(() => {
+            toast.error("Logout failed!");
             navigate("/")
         });
     }

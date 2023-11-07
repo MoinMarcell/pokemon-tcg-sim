@@ -2,6 +2,8 @@ import {AppUserRequest} from "../models/AppUserRequest.tsx";
 import {ChangeEvent, FormEvent, useState} from "react";
 import axios from "axios";
 import {Link, useNavigate} from "react-router-dom";
+import {toast} from "react-toastify";
+import {CustomError} from "../models/CustomError.ts";
 
 export default function Register() {
     const navigate = useNavigate();
@@ -11,6 +13,7 @@ export default function Register() {
         password: "",
         email: "",
     });
+    const [error, setError] = useState<CustomError | undefined>(undefined);
 
     function handleChange(event: ChangeEvent<HTMLInputElement>) {
         setAppUserRequest({
@@ -23,10 +26,20 @@ export default function Register() {
         event.preventDefault();
         axios.post("/api/v1/users/register", appUserRequest)
             .then(() => {
+                toast.success("Registration successful! You can now log in.");
                 navigate("/success");
             })
-            .catch((error) => {
-                console.log(error);
+            .catch((e) => {
+                setError(e.response.data)
+                if(error?.email) {
+                    toast.error(error.email);
+                }
+                if(error?.username) {
+                    toast.error(error.username);
+                }
+                if(error?.password) {
+                    toast.error(error.password);
+                }
             });
     }
 
@@ -41,8 +54,10 @@ export default function Register() {
                         type="text"
                         id="username-register"
                         name="username"
+                        autoComplete="new-username"
                         placeholder="Username"
                         onChange={handleChange}
+                        required
                         value={appUserRequest.username}
                     />
                 </div>
@@ -57,8 +72,10 @@ export default function Register() {
                         type="password"
                         id="password-register"
                         name="password"
+                        autoComplete="new-password"
                         placeholder="Password"
                         onChange={handleChange}
+                        required
                         value={appUserRequest.password}
                     />
                 </div>
@@ -73,8 +90,10 @@ export default function Register() {
                         type="email"
                         id="email"
                         name="email"
+                        autoComplete="new-email"
                         placeholder="Email"
                         onChange={handleChange}
+                        required
                         value={appUserRequest.email}
                     />
                 </div>

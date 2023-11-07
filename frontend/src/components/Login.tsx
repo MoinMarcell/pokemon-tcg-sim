@@ -12,6 +12,8 @@ export default function Login(props: Readonly<LoginProps>) {
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
         props.login(username, password);
+        setPassword("");
+        setUsername("");
     }
 
     return (
@@ -25,8 +27,10 @@ export default function Login(props: Readonly<LoginProps>) {
                         type="text"
                         id="username-login"
                         name="username"
+                        autoComplete="current-username"
                         placeholder="Username"
                         value={username}
+                        required
                         onChange={(e) => setUsername(e.target.value)}
                     />
                 </div>
@@ -41,8 +45,10 @@ export default function Login(props: Readonly<LoginProps>) {
                         type="password"
                         id="password-login"
                         name="password"
+                        autoComplete="current-password"
                         placeholder="Password"
                         value={password}
+                        required
                         onChange={(e) => setPassword(e.target.value)}
                     />
                 </div>
