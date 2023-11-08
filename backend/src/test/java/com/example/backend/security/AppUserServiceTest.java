@@ -25,7 +25,7 @@ class AppUserServiceTest {
 	@Test
 	void registerNewAppUser_whenUserDoesNotExist_thenReturnNewSavedUser() {
 		// when
-		when(appUserRepository.existsAppUserByEmailOrUsername(appUserRequest.email(), appUserRequest.username())).thenReturn(false);
+		when(appUserRepository.existsAppUserByEmailEqualsIgnoreCaseOrUsernameEqualsIgnoreCase(appUserRequest.email(), appUserRequest.username())).thenReturn(false);
 		when(appUserRepository.save(any(AppUser.class))).thenReturn(savedAppUser);
 		when(timeService.getZonedDateTimeNow()).thenReturn("registrationDate");
 		when(argon2Service.encode(appUserRequest.password())).thenReturn("password");
@@ -33,7 +33,7 @@ class AppUserServiceTest {
 
 		AppUserResponse actualAppUserResponse = appUserService.registerNewAppUser(appUserRequest);
 		// then
-		verify(appUserRepository, times(1)).existsAppUserByEmailOrUsername(appUserRequest.email(), appUserRequest.username());
+		verify(appUserRepository, times(1)).existsAppUserByEmailEqualsIgnoreCaseOrUsernameEqualsIgnoreCase(appUserRequest.email(), appUserRequest.username());
 		verify(appUserRepository, times(1)).save(any(AppUser.class));
 		verify(timeService, times(1)).getZonedDateTimeNow();
 		verify(argon2Service, times(1)).encode(appUserRequest.password());
@@ -44,7 +44,7 @@ class AppUserServiceTest {
 	@Test
 	void registerNewAppUser_whenUsernameOrEmailAlreadyExist_thenThrowUsernameOrEmailAlreadyExistException() {
 		// when
-		when(appUserRepository.existsAppUserByEmailOrUsername(appUserRequest.email(), appUserRequest.username())).thenReturn(true);
+		when(appUserRepository.existsAppUserByEmailEqualsIgnoreCaseOrUsernameEqualsIgnoreCase(appUserRequest.email(), appUserRequest.username())).thenReturn(true);
 		// then
 		assertThrows(UsernameOrEmailAlreadyExistException.class, () -> appUserService.registerNewAppUser(appUserRequest));
 	}

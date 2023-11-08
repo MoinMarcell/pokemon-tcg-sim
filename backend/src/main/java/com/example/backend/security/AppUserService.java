@@ -57,7 +57,7 @@ public class AppUserService {
 	}
 
 	private boolean existsAppUserByEmailOrUsername(String email, String username) {
-		return appUserRepository.existsAppUserByEmailOrUsername(email, username);
+		return appUserRepository.existsAppUserByEmailEqualsIgnoreCaseOrUsernameEqualsIgnoreCase(email, username);
 	}
 
 }

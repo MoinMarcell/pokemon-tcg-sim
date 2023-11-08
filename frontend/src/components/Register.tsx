@@ -3,7 +3,6 @@ import React, {ChangeEvent, FormEvent, useState} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {toast} from "react-toastify";
-import {CustomError} from "../models/CustomError.ts";
 import {Box, Button, FormControl, IconButton, Input, InputAdornment, InputLabel, TextField} from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import PasswordIcon from "@mui/icons-material/Password";
@@ -18,7 +17,6 @@ export default function Register() {
         password: "",
         email: "",
     });
-    const [error, setError] = useState<CustomError | undefined>(undefined);
     const [showPassword, setShowPassword] = React.useState(false);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -42,15 +40,10 @@ export default function Register() {
                 navigate("/success");
             })
             .catch((e) => {
-                setError(e.response.data)
-                if (error?.email) {
-                    toast.error(error.email);
-                }
-                if (error?.username) {
-                    toast.error(error.username);
-                }
-                if (error?.password) {
-                    toast.error(error.password);
+                if (e.response.status == 400) {
+                    toast.error("Username or Email already taken.")
+                } else {
+                    toast.error("Something went wrong. Try again later.")
                 }
             });
     }

@@ -23,8 +23,12 @@ export default function App() {
             setAppUser(response.data);
             navigate("/success");
             toast.success("Welcome back, " + username + "!");
-        }).catch(() => {
-            toast.error("Invalid username or password.")
+        }).catch((e) => {
+            if (e.response.status == 401) {
+                toast.error("Invalid username or password.")
+            } else {
+                toast.error("Something went wrong. Try again later.")
+            }
             navigate("/");
         })
     }

@@ -2,6 +2,7 @@ import {AppUser} from "../models/AppUser.ts";
 import {Navigate, useNavigate} from "react-router-dom";
 import axios from "axios";
 import {toast} from "react-toastify";
+import {Button, Container, Typography} from "@mui/material";
 
 type PreRegistrationSuccessProps = {
     appUser: AppUser | undefined;
@@ -22,13 +23,29 @@ export default function PreRegistrationSuccess(props: Readonly<PreRegistrationSu
     }
 
     return (
-        <div className="uk-flex uk-flex-center uk-flex-middle uk-height-1-1">
-            <div className="uk-card uk-card-secondary uk-card-body">
-                <h3 className="uk-card-title uk-text-center">Thank you for you
-                    registration, {props.appUser.username}!</h3>
-                <p className="uk-text-center">The Beta will start soon!</p>
-                <button onClick={logout} className="uk-button uk-button-primary uk-width-1-1">Logout</button>
-            </div>
-        </div>
+        <Container
+            maxWidth={"lg"}
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "rgba(255, 255, 255, 0.8)",
+                borderRadius: "25px",
+                padding: "10px"
+            }}
+        >
+            <Typography variant={"h3"}>
+                Thank you for registration, {props.appUser.username}!
+            </Typography>
+            <Typography paragraph>The Beta will start soon!</Typography>
+            <Button onClick={logout} variant={"contained"} sx={{
+                backgroundColor: "rgba(255, 255, 255, 0.8)",
+                color: "black",
+                width: "100%",
+            }}>
+                Logout
+            </Button>
+        </Container>
     )
 }
