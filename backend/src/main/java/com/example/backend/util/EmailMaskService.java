@@ -1,4 +1,4 @@
-package com.example.backend.security;
+package com.example.backend.util;
 
 import org.springframework.stereotype.Service;
 

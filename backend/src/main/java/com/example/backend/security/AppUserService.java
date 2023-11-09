@@ -3,6 +3,7 @@ package com.example.backend.security;
 import com.example.backend.exception.NoUserLoggedInException;
 import com.example.backend.exception.UsernameOrEmailAlreadyExistException;
 import com.example.backend.util.Argon2Service;
+import com.example.backend.util.EmailMaskService;
 import com.example.backend.util.TimeService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

@@ -2,6 +2,7 @@ package com.example.backend.security;
 
 import com.example.backend.exception.UsernameOrEmailAlreadyExistException;
 import com.example.backend.util.Argon2Service;
+import com.example.backend.util.EmailMaskService;
 import com.example.backend.util.TimeService;
 import org.junit.jupiter.api.Test;
 
