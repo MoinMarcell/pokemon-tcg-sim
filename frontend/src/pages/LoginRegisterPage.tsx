@@ -8,7 +8,7 @@ type LoginRegisterPageProps = {
     login: (username: string, password: string) => void;
 }
 
-export default function LoginRegisterPage(props: LoginRegisterPageProps) {
+export default function LoginRegisterPage(props: Readonly<LoginRegisterPageProps>) {
     return (
         <Container
             maxWidth={"lg"}
