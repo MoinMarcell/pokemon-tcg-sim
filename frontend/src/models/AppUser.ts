@@ -4,4 +4,5 @@ export type AppUser = {
     email: string,
     role: "USER" | "ADMIN",
     registrationDate: string,
+    favoritePokemonCardIds: string[]
 }

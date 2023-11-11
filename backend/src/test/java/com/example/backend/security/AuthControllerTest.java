@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,16 +32,12 @@ class AuthControllerTest {
 	@Test
 	@DirtiesContext
 	void getMe_whenLoggedIn_expectStatus200() throws Exception {
-		AppUser mockUser = new AppUser("id", "test", "test1234", "test@test.de", AppUserRole.USER, "registrationDate");
+		AppUser mockUser = new AppUser("id", "test", "test1234", "test@test.de", AppUserRole.USER, "registrationDate", List.of());
 
-		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-		securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(mockUser, null));
-		SecurityContextHolder.setContext(securityContext);
-
-		AppUserResponse expectedAppUserResponse = new AppUserResponse("id", "test", emailMaskService.maskEmail(mockUser.getEmail()), AppUserRole.USER, "registrationDate");
+		AppUserResponse expectedAppUserResponse = new AppUserResponse("id", "test", emailMaskService.maskEmail(mockUser.getEmail()), AppUserRole.USER, "registrationDate", List.of());
 		String expectedAppUserResponseJson = objectMapper.writeValueAsString(expectedAppUserResponse);
 
-		mockMvc.perform(get(BASE_URI + "/me"))
+		mockMvc.perform(get(BASE_URI + "/me").with(user(mockUser)))
 				.andExpect(status().isOk())
 				.andExpect(content().json(expectedAppUserResponseJson));
 	}

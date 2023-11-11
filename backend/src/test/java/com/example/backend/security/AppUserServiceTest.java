@@ -6,6 +6,8 @@ import com.example.backend.util.EmailMaskService;
 import com.example.backend.util.TimeService;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,8 +22,8 @@ class AppUserServiceTest {
 	private final AppUserService appUserService = new AppUserService(appUserRepository, argon2Service, timeService, emailMaskService);
 
 	AppUserRequest appUserRequest = new AppUserRequest("username", "password", "email");
-	AppUser savedAppUser = new AppUser("id", "username", "password", "email", AppUserRole.USER, "registrationDate");
-	AppUserResponse expectedAppUserResponse = new AppUserResponse("id", "username", "email", AppUserRole.USER, "registrationDate");
+	AppUser savedAppUser = new AppUser("id", "username", "password", "email", AppUserRole.USER, "registrationDate", List.of());
+	AppUserResponse expectedAppUserResponse = new AppUserResponse("id", "username", "email", AppUserRole.USER, "registrationDate", List.of());
 
 	@Test
 	void registerNewAppUser_whenUserDoesNotExist_thenReturnNewSavedUser() {

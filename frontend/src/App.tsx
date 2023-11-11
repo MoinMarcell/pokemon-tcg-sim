@@ -37,7 +37,6 @@ export default function App() {
         axios.get("/api/v1/auth/me").then((response) => {
             setAppUser(response.data);
             if(response.status === 200) {
-                toast.success("Welcome back, " + response.data.username + "!")
                 navigate("/success");
             }
         }).catch(() => {
