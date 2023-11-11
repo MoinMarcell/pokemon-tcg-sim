@@ -30,6 +30,7 @@ public class AppUser implements UserDetails {
 	private String email;
 	private AppUserRole role;
 	private String registrationDate;
+	private List<String> favoritePokemonCardIds;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

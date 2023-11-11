@@ -11,54 +11,84 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class AppUserService {
 
-	private final AppUserRepository appUserRepository;
-	private final Argon2Service argon2Service;
-	private final TimeService timeService;
-	private final EmailMaskService emailMaskService;
+    private final AppUserRepository appUserRepository;
+    private final Argon2Service argon2Service;
+    private final TimeService timeService;
+    private final EmailMaskService emailMaskService;
 
 
-	public AppUserResponse registerNewAppUser(@NotNull @Valid AppUserRequest appUserRequest) {
-		if (existsAppUserByEmailOrUsername(appUserRequest.email(), appUserRequest.username())) {
-			throw new UsernameOrEmailAlreadyExistException("Email or username already taken");
-		}
-		AppUser savedAppUser = appUserRepository.save(
-				AppUser.builder()
-						.username(appUserRequest.username())
-						.password(argon2Service.encode(appUserRequest.password()))
-						.email(appUserRequest.email())
-						.role(AppUserRole.USER)
-						.registrationDate(timeService.getZonedDateTimeNow())
-						.build()
-		);
-		return new AppUserResponse(
-				savedAppUser.getId(),
-				savedAppUser.getUsername(),
-				emailMaskService.maskEmail(savedAppUser.getEmail()),
-				savedAppUser.getRole(),
-				savedAppUser.getRegistrationDate()
-		);
-	}
+    public AppUserResponse registerNewAppUser(@NotNull @Valid AppUserRequest appUserRequest) {
+        if (existsAppUserByEmailOrUsername(appUserRequest.email(), appUserRequest.username())) {
+            throw new UsernameOrEmailAlreadyExistException("Email or username already taken");
+        }
+        AppUser savedAppUser = AppUser.builder()
+                .username(appUserRequest.username())
+                .password(argon2Service.encode(appUserRequest.password()))
+                .email(appUserRequest.email())
+                .role(AppUserRole.USER)
+                .registrationDate(timeService.getZonedDateTimeNow())
+                .favoritePokemonCardIds(List.of())
+                .build();
 
-	public AppUserResponse getLoggedInAppUser() {
-		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if (principal instanceof AppUser appUserDetails) {
-			return new AppUserResponse(
-					appUserDetails.getId(),
-					appUserDetails.getUsername(),
-					emailMaskService.maskEmail(appUserDetails.getEmail()),
-					appUserDetails.getRole(),
-					appUserDetails.getRegistrationDate()
-			);
-		}
-		throw new NoUserLoggedInException("No User Logged In");
-	}
+        return saveAppUser(savedAppUser);
+    }
 
-	private boolean existsAppUserByEmailOrUsername(String email, String username) {
-		return appUserRepository.existsAppUserByEmailEqualsIgnoreCaseOrUsernameEqualsIgnoreCase(email, username);
-	}
+    public AppUserResponse getLoggedInAppUser() {
+        AppUser appUser = getLoggedInUser();
+        return new AppUserResponse(
+                appUser.getId(),
+                appUser.getUsername(),
+                emailMaskService.maskEmail(appUser.getEmail()),
+                appUser.getRole(),
+                appUser.getRegistrationDate(),
+                appUser.getFavoritePokemonCardIds()
+        );
+    }
+
+    public AppUserResponse addFavoritePokemonCardId(String pokemonCardId) {
+        AppUser appUser = getLoggedInUser();
+        appUser.getFavoritePokemonCardIds().add(pokemonCardId);
+        return saveAppUser(appUser);
+    }
+
+    public AppUserResponse deleteFavoritePokemonCardId(String pokemonCardId) {
+        AppUser appUser = getLoggedInUser();
+        appUser.getFavoritePokemonCardIds().remove(pokemonCardId);
+        return saveAppUser(appUser);
+    }
+
+    public List<String> getFavoritePokemonCards() {
+        return getLoggedInUser().getFavoritePokemonCardIds();
+    }
+
+    private AppUser getLoggedInUser() {
+        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof AppUser appUserDetails) {
+            return appUserDetails;
+        }
+        throw new NoUserLoggedInException("No User Logged In");
+    }
+
+    private AppUserResponse saveAppUser(AppUser appUser) {
+        AppUser savedAppUser = appUserRepository.save(appUser);
+        return new AppUserResponse(
+                savedAppUser.getId(),
+                savedAppUser.getUsername(),
+                emailMaskService.maskEmail(savedAppUser.getEmail()),
+                savedAppUser.getRole(),
+                savedAppUser.getRegistrationDate(),
+                savedAppUser.getFavoritePokemonCardIds()
+        );
+    }
+
+    private boolean existsAppUserByEmailOrUsername(String email, String username) {
+        return appUserRepository.existsAppUserByEmailEqualsIgnoreCaseOrUsernameEqualsIgnoreCase(email, username);
+    }
 
 }

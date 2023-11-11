@@ -9,6 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -30,9 +32,9 @@ class AuthControllerTest {
 	@Test
 	@DirtiesContext
 	void getMe_whenLoggedIn_expectStatus200() throws Exception {
-		AppUser mockUser = new AppUser("id", "test", "test1234", "test@test.de", AppUserRole.USER, "registrationDate");
+		AppUser mockUser = new AppUser("id", "test", "test1234", "test@test.de", AppUserRole.USER, "registrationDate", List.of());
 
-		AppUserResponse expectedAppUserResponse = new AppUserResponse("id", "test", emailMaskService.maskEmail(mockUser.getEmail()), AppUserRole.USER, "registrationDate");
+		AppUserResponse expectedAppUserResponse = new AppUserResponse("id", "test", emailMaskService.maskEmail(mockUser.getEmail()), AppUserRole.USER, "registrationDate", List.of());
 		String expectedAppUserResponseJson = objectMapper.writeValueAsString(expectedAppUserResponse);
 
 		mockMvc.perform(get(BASE_URI + "/me").with(user(mockUser)))
