@@ -228,7 +228,7 @@ class PokemonCardControllerTest {
 
         String expectedErrorMessage = "Handler dispatch failed: java.lang.AssertionError";
 
-        mockMvc.perform(get("/api/v1/pokemon/cards?name=charizard?page=2"))
+        mockMvc.perform(get("/api/v1/pokemon/cards?name=charizard&page=2"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(expectedErrorMessage));
     }
