@@ -1,0 +1,56 @@
+package com.example.backend.pokemon.api;
+
+import com.example.backend.pokemon.model.PokemonCard;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.List;
+import java.util.Objects;
+
+@Service
+public class PokemonTcgCardApiService {
+
+    @Value("${pokemontcg.api.key}")
+    private String apiKey;
+    private static final String BASE_URL = "https://api.pokemontcg.io/v2/cards";
+    private final WebClient webClient = WebClient.builder().baseUrl(BASE_URL).build();
+
+    public List<PokemonCard> fetchCardsByName(String name) {
+        PokemonTcgApiResponse response = Objects.requireNonNull(webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .queryParam("q", "name:" + name)
+                        .queryParam("orderBy", "name")
+                        .queryParam("pageSize", 20)
+                        .queryParam("page", 1)
+                        .build())
+                .header("X-Api-Key", apiKey)
+                .retrieve()
+                .toEntity(PokemonTcgApiResponse.class)
+                .block()).getBody();
+        assert response != null;
+        if (!response.data().isEmpty()) {
+            return response.data();
+        }
+        throw new NoCardFoundException("No card(s) found");
+    }
+
+    public List<PokemonCard> fetchCardsByName(String name, int page) {
+        PokemonTcgApiResponse response = Objects.requireNonNull(webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .queryParam("q", "name:" + name)
+                        .queryParam("orderBy", "name")
+                        .queryParam("pageSize", 20)
+                        .queryParam("page", page)
+                        .build())
+                .header("X-Api-Key", apiKey)
+                .retrieve()
+                .toEntity(PokemonTcgApiResponse.class)
+                .block()).getBody();
+        assert response != null;
+        if (!response.data().isEmpty()) {
+            return response.data();
+        }
+        throw new NoCardFoundException("No card(s) found");
+    }
+}

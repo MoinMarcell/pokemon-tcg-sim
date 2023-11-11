@@ -20,37 +20,47 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class AuthControllerTest {
 
-	private static final String BASE_URI = "/api/v1/auth";
+    private static final String BASE_URI = "/api/v1/auth";
 
-	@Autowired
-	private MockMvc mockMvc;
-	@Autowired
-	private ObjectMapper objectMapper;
-	@Autowired
-	private EmailMaskService emailMaskService;
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private EmailMaskService emailMaskService;
 
-	@Test
-	@DirtiesContext
-	void getMe_whenLoggedIn_expectStatus200() throws Exception {
-		AppUser mockUser = new AppUser("id", "test", "test1234", "test@test.de", AppUserRole.USER, "registrationDate");
+    @Test
+    @DirtiesContext
+    void getMe_whenLoggedIn_expectStatus200() throws Exception {
+        AppUser mockUser = new AppUser("id", "test", "test1234", "test@test.de", AppUserRole.USER, "registrationDate");
 
-		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-		securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(mockUser, null));
-		SecurityContextHolder.setContext(securityContext);
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(mockUser, null));
+        SecurityContextHolder.setContext(securityContext);
 
-		AppUserResponse expectedAppUserResponse = new AppUserResponse("id", "test", emailMaskService.maskEmail(mockUser.getEmail()), AppUserRole.USER, "registrationDate");
-		String expectedAppUserResponseJson = objectMapper.writeValueAsString(expectedAppUserResponse);
+        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-		mockMvc.perform(get(BASE_URI + "/me"))
-				.andExpect(status().isOk())
-				.andExpect(content().json(expectedAppUserResponseJson));
-	}
+        if (principal instanceof AppUser appUser) {
+            AppUserResponse expectedAppUserResponse = new AppUserResponse(
+                    appUser.getId(),
+                    appUser.getUsername(),
+                    emailMaskService.maskEmail(appUser.getEmail()),
+                    appUser.getRole(),
+                    appUser.getRegistrationDate()
+            );
+            String expectedAppUserResponseJson = objectMapper.writeValueAsString(expectedAppUserResponse);
 
-	@Test
-	@DirtiesContext
-	void getMe_whenNotLoggedIn_expectStatus401() throws Exception {
-		mockMvc.perform(get(BASE_URI + "/me"))
-				.andExpect(status().isUnauthorized())
-				.andExpect(content().string("No User Logged In"));
-	}
+            mockMvc.perform(get(BASE_URI + "/me"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(expectedAppUserResponseJson));
+        }
+    }
+
+    @Test
+    @DirtiesContext
+    void getMe_whenNotLoggedIn_expectStatus401() throws Exception {
+        mockMvc.perform(get(BASE_URI + "/me"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().string("No User Logged In"));
+    }
 }
