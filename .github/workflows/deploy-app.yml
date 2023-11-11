@@ -73,7 +73,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: moinmarcell/oauth-demo:latest
+          tags: moinmarcell/pokemon-tcg-sim:latest
           context: .
 
   deploy:
