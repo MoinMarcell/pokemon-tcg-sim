@@ -18,4 +18,16 @@ public class AppUserController {
 		return appUserService.registerNewAppUser(appUserRequest);
 	}
 
+
+	@PostMapping("/password/send/reset")
+	@ResponseStatus(HttpStatus.OK)
+	public void resetPassword(@RequestBody PasswordResetRequest request) {
+		appUserService.sendPasswordReset(request.email());
+	}
+
+	@PostMapping("/password/reset")
+	@ResponseStatus(HttpStatus.OK)
+	public void resetPassword(@RequestBody PasswordReset request) {
+		appUserService.passwordReset(request);
+	}
 }

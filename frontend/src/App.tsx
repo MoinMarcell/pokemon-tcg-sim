@@ -7,6 +7,7 @@ import PreRegistrationSuccess from "./protected/PreRegistrationSuccess.tsx";
 import LoginRegisterPage from "./pages/LoginRegisterPage.tsx";
 import 'react-toastify/dist/ReactToastify.css';
 import {toast, ToastContainer} from "react-toastify";
+import PasswordResetPage from "./pages/PasswordResetPage.tsx";
 
 export default function App() {
     const [appUser, setAppUser] = useState<AppUser | undefined>(undefined);
@@ -40,15 +41,14 @@ export default function App() {
                 toast.success("Welcome back, " + response.data.username + "!")
                 navigate("/success");
             }
-        }).catch(() => {
-            navigate("/");
         });
-    }, [navigate]);
+    }, []);
 
     return (
         <>
             <Routes>
                 <Route path={"/"} element={<LoginRegisterPage login={login}/>}/>
+                <Route path={"/reset-password"} element={<PasswordResetPage/>}/>
                 <Route element={<ProtectedRoutes appUser={appUser}/>}>
                     <Route path={"/success"} element={<PreRegistrationSuccess appUser={appUser}/>}/>
                 </Route>

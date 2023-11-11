@@ -3,6 +3,7 @@ import {Box, Button, FormControl, IconButton, Input, InputAdornment, InputLabel,
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import PersonIcon from '@mui/icons-material/Person';
 import PasswordIcon from '@mui/icons-material/Password';
+import {Link} from "react-router-dom";
 
 type LoginProps = {
     login: (username: string, password: string) => void;
@@ -83,6 +84,7 @@ export default function Login(props: Readonly<LoginProps>) {
                 }}>
                     Login
                 </Button>
+                <Link to="/reset-password">Reset Password</Link>
             </Box>
         </Box>
     );

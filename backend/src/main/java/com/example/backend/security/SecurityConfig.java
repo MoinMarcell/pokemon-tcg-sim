@@ -28,6 +28,8 @@ public class SecurityConfig {
 						authorizeHttpRequests
 								.requestMatchers("/api/v1/auth/**").permitAll()
 								.requestMatchers("/api/v1/users/register").permitAll()
+								.requestMatchers("/api/v1/users/password/send/reset").permitAll()
+								.requestMatchers("/api/v1/users/password/reset").permitAll()
 								.anyRequest().authenticated()
 				)
 				.httpBasic(c -> c.authenticationEntryPoint((request, response, authException) -> response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase())))
