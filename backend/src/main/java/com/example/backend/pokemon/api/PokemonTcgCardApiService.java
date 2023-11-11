@@ -20,22 +20,7 @@ public class PokemonTcgCardApiService {
     }
 
     public List<PokemonCard> fetchCardsByName(String name) {
-        PokemonTcgApiResponse response = Objects.requireNonNull(webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .queryParam("q", "name:" + name)
-                        .queryParam("orderBy", "name")
-                        .queryParam("pageSize", 20)
-                        .queryParam("page", 1)
-                        .build())
-                .header("X-Api-Key", apiKey)
-                .retrieve()
-                .toEntity(PokemonTcgApiResponse.class)
-                .block()).getBody();
-        assert response != null;
-        if (!response.data().isEmpty()) {
-            return response.data();
-        }
-        throw new NoCardFoundException("No card(s) found");
+        return fetchCardsByName(name, 1);
     }
 
     public List<PokemonCard> fetchCardsByName(String name, int page) {
