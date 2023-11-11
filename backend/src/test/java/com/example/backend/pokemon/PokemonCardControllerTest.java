@@ -197,6 +197,44 @@ class PokemonCardControllerTest {
 
     @Test
     @DirtiesContext
+    @WithMockUser
+    void getCardsByName_whenLoggedInAndCalledWithoutPageParamAndResponseIsNull_expectStatus400AndErrorMessage() throws Exception {
+        String responseAsJson = objectMapper.writeValueAsString(null);
+
+        MockResponse mockResponse = new MockResponse();
+        mockResponse.setBody(responseAsJson);
+        mockResponse.addHeader("Content-Type", "application/json");
+
+        mockWebServer.enqueue(mockResponse);
+
+        String expectedErrorMessage = "Handler dispatch failed: java.lang.AssertionError";
+
+        mockMvc.perform(get("/api/v1/pokemon/cards?name=charizard"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(expectedErrorMessage));
+    }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser
+    void getCardsByName_whenLoggedInAndCalledWithPageParamAndResponseIsNull_expectStatus400AndErrorMessage() throws Exception {
+        String responseAsJson = objectMapper.writeValueAsString(null);
+
+        MockResponse mockResponse = new MockResponse();
+        mockResponse.setBody(responseAsJson);
+        mockResponse.addHeader("Content-Type", "application/json");
+
+        mockWebServer.enqueue(mockResponse);
+
+        String expectedErrorMessage = "Handler dispatch failed: java.lang.AssertionError";
+
+        mockMvc.perform(get("/api/v1/pokemon/cards?name=charizard?page=2"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(expectedErrorMessage));
+    }
+
+    @Test
+    @DirtiesContext
     void getCardsByName_whenNotLoggedInAndCalledWithPageParam_expectStatus401() throws Exception {
         mockMvc.perform(get("/api/v1/pokemon/cards?name=charizard&page=2"))
                 .andExpect(status().isUnauthorized());
