@@ -13,8 +13,11 @@ public class PokemonTcgCardApiService {
 
     @Value("${pokemontcg.api.key}")
     private String apiKey;
-    private static final String BASE_URL = "https://api.pokemontcg.io/v2/cards";
-    private final WebClient webClient = WebClient.builder().baseUrl(BASE_URL).build();
+    private final WebClient webClient;
+
+    public PokemonTcgCardApiService(@Value("${pokemon.api.card.url}") String url) {
+        webClient = WebClient.builder().baseUrl(url).build();
+    }
 
     public List<PokemonCard> fetchCardsByName(String name) {
         PokemonTcgApiResponse response = Objects.requireNonNull(webClient.get()

@@ -15,25 +15,24 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
-	}
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
+    }
 
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http
-				.csrf(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests(authorizeHttpRequests ->
-						authorizeHttpRequests
-								.requestMatchers("/api/v1/auth/**").permitAll()
-								.requestMatchers("/api/v1/users/register").permitAll()
-								.anyRequest().authenticated()
-				)
-				.httpBasic(c -> c.authenticationEntryPoint((request, response, authException) -> response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase())))
-				.sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
-				.formLogin(AbstractHttpConfigurer::disable);
-		return http.build();
-	}
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(authorizeHttpRequests ->
+                        authorizeHttpRequests
+                                .requestMatchers("/api/v1/pokemon/**").authenticated()
+                                .anyRequest().permitAll()
+                )
+                .httpBasic(c -> c.authenticationEntryPoint((request, response, authException) -> response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase())))
+                .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+                .formLogin(AbstractHttpConfigurer::disable);
+        return http.build();
+    }
 
 }
