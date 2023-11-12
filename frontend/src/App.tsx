@@ -7,6 +7,8 @@ import PreRegistrationSuccess from "./protected/PreRegistrationSuccess.tsx";
 import LoginRegisterPage from "./pages/LoginRegisterPage.tsx";
 import 'react-toastify/dist/ReactToastify.css';
 import {toast, ToastContainer} from "react-toastify";
+import AvailableCards from "./protected/AvailableCards.tsx";
+import FavoriteCards from "./protected/FavoriteCards.tsx";
 
 export default function App() {
     const [appUser, setAppUser] = useState<AppUser | undefined>(undefined);
@@ -34,22 +36,27 @@ export default function App() {
     }
 
     useEffect(() => {
-        axios.get("/api/v1/auth/me").then((response) => {
-            setAppUser(response.data);
-            if(response.status === 200) {
-                navigate("/success");
-            }
-        }).catch(() => {
-            navigate("/");
-        });
+        axios.get("/api/v1/auth/me")
+            .then((response) => {
+                setAppUser(response.data);
+            })
+            .catch(() => {
+                navigate("/");
+            });
     }, [navigate]);
+
+    if (!appUser) {
+        return <div>Loading...</div>
+    }
 
     return (
         <>
             <Routes>
-                <Route path={"/"} element={<LoginRegisterPage login={login}/>}/>
+                <Route path={"/"} element={<LoginRegisterPage appUser={appUser} login={login}/>}/>
                 <Route element={<ProtectedRoutes appUser={appUser}/>}>
                     <Route path={"/success"} element={<PreRegistrationSuccess appUser={appUser}/>}/>
+                    <Route path={"/cards"} element={<AvailableCards/>}/>
+                    <Route path={"/users/:username/favorites"} element={<FavoriteCards appUser={appUser}/>}/>
                 </Route>
             </Routes>
             <ToastContainer

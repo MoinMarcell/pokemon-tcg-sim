@@ -1,22 +1,15 @@
 import {AppUser} from "../models/AppUser.ts";
-import {Navigate, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import {toast} from "react-toastify";
-import {Button, Container, TextField, Typography} from "@mui/material";
-import {PokemonCard} from "../models/Pokemon.ts";
-import {useState} from "react";
-import PokemonCardGallery from "../components/pokemon/PokemonCardGallery.tsx";
+import {Box, Button, Container, Typography} from "@mui/material";
 
 type PreRegistrationSuccessProps = {
-    appUser: AppUser | undefined;
+    appUser: AppUser;
 }
 
 export default function PreRegistrationSuccess(props: Readonly<PreRegistrationSuccessProps>) {
     const navigate = useNavigate();
-    const [cards, setCards] = useState<PokemonCard[]>([]);
-    const [searchText, setSearchText] = useState<string>("");
-    const [loadingCards, setLoadingCards] = useState<boolean>(false);
-    if (!props.appUser) return <Navigate to={"/"}/>
 
     function logout() {
         axios.post("/api/v1/auth/logout").then(() => {
@@ -26,20 +19,6 @@ export default function PreRegistrationSuccess(props: Readonly<PreRegistrationSu
             toast.error("Logout failed!");
             navigate("/")
         });
-    }
-
-    function fetchCards() {
-        setLoadingCards(true)
-        if (searchText && searchText.length > 3) {
-            axios.get(`/api/v1/pokemon/cards?name=${searchText}`)
-                .then((response) => {
-                    setCards(response.data);
-                })
-                .catch(() => {
-                    toast.error("Fetching cards failed!");
-                })
-                .finally(() => setLoadingCards(false));
-        }
     }
 
     return (
@@ -66,22 +45,31 @@ export default function PreRegistrationSuccess(props: Readonly<PreRegistrationSu
             }}>
                 Logout
             </Button>
-            <TextField id="search-for-card" label="Search Card(s)" variant="standard" value={searchText}
-                       onChange={(e) => setSearchText(e.target.value)}/>
-            <Button onClick={fetchCards} variant={"contained"}>Search</Button>
-            {
-                loadingCards &&
-                <Typography paragraph>
-                    Loading Cards...
-                </Typography>
-            }
-            {
-                cards.length > 0 ?
-                    <PokemonCardGallery appUser={props.appUser} pokemonCards={cards}/> :
-                    <Typography paragraph>
-                        No Cards found!
-                    </Typography>
-            }
+            <Box component={"div"} sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+                gap: 2,
+                m: 1,
+            }}>
+                <Button onClick={() => navigate("/cards")} variant={"contained"} sx={{
+                    backgroundColor: "rgba(255, 255, 255, 0.8)",
+                    color: "black",
+                    width: "100%",
+                }}>
+                    Available cards
+                </Button>
+                <Button onClick={() => navigate(`/users/${props.appUser.username}/favorites`)} variant={"contained"}
+                        sx={{
+                            backgroundColor: "rgba(255, 255, 255, 0.8)",
+                            color: "black",
+                            width: "100%",
+                        }}>
+                    My favorite cards
+                </Button>
+            </Box>
         </Container>
     )
 }

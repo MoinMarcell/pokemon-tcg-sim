@@ -1,6 +1,6 @@
 import {ImageList} from "@mui/material";
 import {PokemonCard} from "../../models/Pokemon.ts";
-import PokemonCardImage from "./PokemonCard.tsx";
+import PokemonCardImage from "./PokemonCardImage.tsx";
 import {AppUser} from "../../models/AppUser.ts";
 
 type PokemonCardGalleryProps = {

@@ -3,12 +3,18 @@ import Login from "../components/Login.tsx";
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import Register from "../components/Register.tsx";
+import {AppUser} from "../models/AppUser.ts";
+import {Navigate} from "react-router-dom";
 
 type LoginRegisterPageProps = {
     login: (username: string, password: string) => void;
+    appUser: AppUser;
 }
 
 export default function LoginRegisterPage(props: Readonly<LoginRegisterPageProps>) {
+    if (props.appUser) {
+        return <Navigate to={"/success"}/>;
+    }
     return (
         <Container
             maxWidth={"lg"}

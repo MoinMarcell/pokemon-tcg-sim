@@ -7,11 +7,11 @@ import {useState} from "react";
 import {toast} from "react-toastify";
 import {AppUser} from "../../models/AppUser.ts";
 
-type PokemonCardProps = {
+type PokemonCardImageProps = {
     pokemonCard: PokemonCard;
     appUser: AppUser;
 }
-export default function PokemonCardImage(props: Readonly<PokemonCardProps>) {
+export default function PokemonCardImage(props: Readonly<PokemonCardImageProps>) {
     const [isFavorite, setIsFavorite] = useState<boolean>(props.appUser.favoritePokemonCardIds.includes(props.pokemonCard.id));
     const [loading, setLoading] = useState<boolean>(false);
 
