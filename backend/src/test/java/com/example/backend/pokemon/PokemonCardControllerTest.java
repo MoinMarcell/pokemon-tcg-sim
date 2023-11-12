@@ -28,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class PokemonCardControllerTest {
 
+    public static final String API_V_1_POKEMON_CARDS = "/api/v1/pokemon/cards";
     private static MockWebServer mockWebServer;
 
     @Autowired
@@ -54,7 +55,7 @@ class PokemonCardControllerTest {
     @Test
     @DirtiesContext
     @WithMockUser
-    void getCardsByName_whenLoggedInAndCalledWithoutPageParam_expectStatus200AndListOfCardsOfPageOne() throws Exception {
+    void getCardsByName_CalledWithoutPageParam_expectStatus200AndApiResponse() throws Exception {
         PokemonTcgApiResponse response = new PokemonTcgApiResponse(
                 List.of(
                         new PokemonCard(
@@ -77,6 +78,7 @@ class PokemonCardControllerTest {
                         )
                 ),
                 1,
+                10,
                 20,
                 20,
                 "200"
@@ -89,67 +91,19 @@ class PokemonCardControllerTest {
 
         mockWebServer.enqueue(mockResponse);
 
-        List<PokemonCard> expectedCards = response.data();
-        String expectedCardsAsJson = objectMapper.writeValueAsString(expectedCards);
-
-        mockMvc.perform(get("/api/v1/pokemon/cards?name=charizard"))
+        mockMvc.perform(get(API_V_1_POKEMON_CARDS))
                 .andExpect(status().isOk())
-                .andExpect(content().json(expectedCardsAsJson));
+                .andExpect(content().json(responseAsJson));
     }
 
     @Test
     @DirtiesContext
     @WithMockUser
-    void getCardsByName_whenLoggedInAndCalledWithPageParam_expectStatus200AndListOfCardsOfPageParam() throws Exception {
-        PokemonTcgApiResponse response = new PokemonTcgApiResponse(
-                List.of(
-                        new PokemonCard(
-                                "id",
-                                "name",
-                                "supertype",
-                                List.of("subtype1", "subtype2"),
-                                "level",
-                                "hp",
-                                List.of("types"),
-                                List.of("rules"),
-                                List.of(new PokemonAbility("abilityName", "abilityText", "abilityType")),
-                                List.of(new PokemonAttack("attackName", List.of("costs"), "convertedEnergyCost", "attackDamage", "attackText")),
-                                List.of(new PokemonWeakness("weaknessType", "weaknessValue")),
-                                List.of(new PokemonResistance("resistanceType", "resistanceValue")),
-                                List.of("retreatCost"),
-                                1,
-                                "flavorText",
-                                new PokemonCardImage("imageUrl", "imageUrlHiRes")
-                        )
-                ),
-                1,
-                20,
-                20,
-                "200"
-        );
-        String responseAsJson = objectMapper.writeValueAsString(response);
-
-        MockResponse mockResponse = new MockResponse();
-        mockResponse.setBody(responseAsJson);
-        mockResponse.addHeader("Content-Type", "application/json");
-
-        mockWebServer.enqueue(mockResponse);
-
-        List<PokemonCard> expectedCards = response.data();
-        String expectedCardsAsJson = objectMapper.writeValueAsString(expectedCards);
-
-        mockMvc.perform(get("/api/v1/pokemon/cards?name=charizard&page=2"))
-                .andExpect(status().isOk())
-                .andExpect(content().json(expectedCardsAsJson));
-    }
-
-    @Test
-    @DirtiesContext
-    @WithMockUser
-    void getCardsByName_whenLoggedInAndCalledWithPageParamAndDataIsEmpty_expectStatus400AndErrorMessage() throws Exception {
+    void getCardsByName_whenResponseIsNotNullAndDataIsEmpty_expectStatus400AndErrorMessage() throws Exception {
         PokemonTcgApiResponse response = new PokemonTcgApiResponse(
                 List.of(),
                 1,
+                10,
                 20,
                 20,
                 "200"
@@ -162,43 +116,15 @@ class PokemonCardControllerTest {
 
         mockWebServer.enqueue(mockResponse);
 
-        String expectedErrorMessage = "No card(s) found";
-
-        mockMvc.perform(get("/api/v1/pokemon/cards?name=charizard&page=2"))
+        mockMvc.perform(get(API_V_1_POKEMON_CARDS))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string(expectedErrorMessage));
+                .andExpect(content().string("No cards found"));
     }
 
     @Test
     @DirtiesContext
     @WithMockUser
-    void getCardsByName_whenLoggedInAndCalledWithoutPageParamAndDataIsEmpty_expectStatus400AndErrorMessage() throws Exception {
-        PokemonTcgApiResponse response = new PokemonTcgApiResponse(
-                List.of(),
-                1,
-                20,
-                20,
-                "200"
-        );
-        String responseAsJson = objectMapper.writeValueAsString(response);
-
-        MockResponse mockResponse = new MockResponse();
-        mockResponse.setBody(responseAsJson);
-        mockResponse.addHeader("Content-Type", "application/json");
-
-        mockWebServer.enqueue(mockResponse);
-
-        String expectedErrorMessage = "No card(s) found";
-
-        mockMvc.perform(get("/api/v1/pokemon/cards?name=charizard"))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string(expectedErrorMessage));
-    }
-
-    @Test
-    @DirtiesContext
-    @WithMockUser
-    void getCardsByName_whenLoggedInAndCalledWithoutPageParamAndResponseIsNull_expectStatus400AndErrorMessage() throws Exception {
+    void getCardsByName_whenResponseIsNull_expectStatus502AndErrorMessage() throws Exception {
         String responseAsJson = objectMapper.writeValueAsString(null);
 
         MockResponse mockResponse = new MockResponse();
@@ -207,43 +133,15 @@ class PokemonCardControllerTest {
 
         mockWebServer.enqueue(mockResponse);
 
-        String expectedErrorMessage = "Handler dispatch failed: java.lang.AssertionError";
-
-        mockMvc.perform(get("/api/v1/pokemon/cards?name=charizard"))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string(expectedErrorMessage));
+        mockMvc.perform(get(API_V_1_POKEMON_CARDS))
+                .andExpect(status().isBadGateway())
+                .andExpect(content().string("Something went wrong while fetching the cards"));
     }
 
     @Test
     @DirtiesContext
-    @WithMockUser
-    void getCardsByName_whenLoggedInAndCalledWithPageParamAndResponseIsNull_expectStatus400AndErrorMessage() throws Exception {
-        String responseAsJson = objectMapper.writeValueAsString(null);
-
-        MockResponse mockResponse = new MockResponse();
-        mockResponse.setBody(responseAsJson);
-        mockResponse.addHeader("Content-Type", "application/json");
-
-        mockWebServer.enqueue(mockResponse);
-
-        String expectedErrorMessage = "Handler dispatch failed: java.lang.AssertionError";
-
-        mockMvc.perform(get("/api/v1/pokemon/cards?name=charizard&page=2"))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string(expectedErrorMessage));
-    }
-
-    @Test
-    @DirtiesContext
-    void getCardsByName_whenNotLoggedInAndCalledWithPageParam_expectStatus401() throws Exception {
-        mockMvc.perform(get("/api/v1/pokemon/cards?name=charizard&page=2"))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    @DirtiesContext
-    void getCardsByName_whenNotLoggedInAndCalledWithoutPageParam_expectStatus401() throws Exception {
-        mockMvc.perform(get("/api/v1/pokemon/cards?name=charizard"))
+    void getCardsByName_whenNotLoggedIn_expectStatus401() throws Exception {
+        mockMvc.perform(get(API_V_1_POKEMON_CARDS))
                 .andExpect(status().isUnauthorized());
     }
 }
