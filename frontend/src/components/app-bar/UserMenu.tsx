@@ -30,9 +30,8 @@ export default function UserMenu(props: Readonly<UserMenuProps>) {
                 props.handleGetMe();
                 navigate("/")
             })
-            .catch((error) => {
+            .catch(() => {
                 toast.error("Something went wrong!")
-                console.log(error)
             })
             .finally(() => props.handleCloseUserMenu());
     }

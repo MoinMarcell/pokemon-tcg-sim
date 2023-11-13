@@ -62,14 +62,12 @@ export default function Register(props: Readonly<RegisterProps>) {
             username: username,
             password: password,
             email: email,
-        }).then((response) => {
-            navigate("/login")
+        }).then(() => {
             toast.success("Successfully registered! You can now login.")
-            console.log(response);
+            navigate("/login")
         }).catch((error) => {
-            setIsError(true)
             toast.error(error.response.data)
-            console.log(error);
+            setIsError(true)
         }).finally(() => {
             setIsLoading(false);
             setPassword("");

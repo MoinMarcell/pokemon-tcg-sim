@@ -64,11 +64,11 @@ public class AppUserService {
     }
 
     public boolean usernameAlreadyExists(String username) {
-        return appUserRepository.existsAppUserByUsernameEqualsIgnoreCase(username);
+        return appUserRepository.existsAppUserByUsername(username);
     }
 
     public boolean emailAlreadyExists(String email) {
-        return appUserRepository.existsAppUserByEmailEqualsIgnoreCase(email);
+        return appUserRepository.existsAppUserByEmail(email);
     }
 
     public List<String> getFavoritePokemonCards() {

@@ -30,7 +30,7 @@ public class PokemonTcgCardApiService {
                 .block()).getBody();
 
         if (response != null) {
-            if (!response.data().isEmpty()) {
+            if (!response.pokemonCards().isEmpty()) {
                 return response.withPages((int) Math.ceil(Double.parseDouble(response.totalCards()) / response.pageSize()));
             }
             throw new NoCardFoundException("No cards found");

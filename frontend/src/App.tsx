@@ -9,6 +9,8 @@ import Login from "./components/login/Login.tsx";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import Register from "./components/login/Register.tsx";
+import PokemonCards from "./pages/PokemonCards.tsx";
+import PokeballLoadSpinner from "./components/PokeballLoadSpinner.tsx";
 
 const darkTheme = createTheme({
     palette: {
@@ -26,9 +28,8 @@ export default function App() {
             .then((response) => {
                 setAppUser(response.data);
             })
-            .catch((error) => {
+            .catch(() => {
                 setAppUser(null)
-                console.log(error)
             })
             .finally(() => setIsLoading(false));
     }
@@ -37,7 +38,7 @@ export default function App() {
         getMe();
     }, []);
 
-    if (isLoading) return <></>;
+    if (isLoading) return <PokeballLoadSpinner/>;
 
     return (
         <>
@@ -57,6 +58,7 @@ export default function App() {
                         <Route path="/" element={<Home/>}/>
                         <Route path="/login" element={<Login handleGetMe={getMe} appUser={appUser}/>}/>
                         <Route path="/register" element={<Register appUser={appUser}/>}/>
+                        <Route path="/cards" element={<PokemonCards appUser={appUser} isLoading={isLoading}/>}/>
                     </Routes>
                 </Box>
             </ThemeProvider>

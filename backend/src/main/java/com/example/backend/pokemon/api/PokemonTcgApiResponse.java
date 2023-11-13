@@ -7,7 +7,8 @@ import lombok.With;
 import java.util.List;
 
 public record PokemonTcgApiResponse(
-        List<PokemonCard> data,
+        @JsonAlias("data")
+        List<PokemonCard> pokemonCards,
         int page,
         @With int pages,
         int pageSize,

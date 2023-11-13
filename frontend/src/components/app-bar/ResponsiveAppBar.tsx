@@ -47,6 +47,8 @@ export default function ResponsiveAppBar(props: Readonly<ResponsiveAppBarProps>)
                     <Typography
                         variant="h6"
                         noWrap
+                        component="a"
+                        href="/"
                         sx={{
                             mr: 2,
                             display: {xs: 'none', md: 'flex'},
@@ -70,7 +72,7 @@ export default function ResponsiveAppBar(props: Readonly<ResponsiveAppBarProps>)
                         variant="h5"
                         noWrap
                         component="a"
-                        href="#app-bar-with-responsive-menu"
+                        href="/"
                         sx={{
                             mr: 2,
                             display: {xs: 'flex', md: 'none'},

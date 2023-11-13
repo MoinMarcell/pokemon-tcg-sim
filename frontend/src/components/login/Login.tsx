@@ -51,18 +51,16 @@ export default function Login(props: Readonly<LoginProps>) {
                 password: password
             }
         }).then((response) => {
-            props.handleGetMe();
             const data = response.data;
             toast.success("Welcome back, " + data.username + "!");
             navigate("/")
-            console.log(response);
+            props.handleGetMe();
         }).catch((error) => {
             if (error.response.status === 401) {
                 toast.error("Incorrect username or password!");
             } else {
                 toast.error("Something went wrong!");
             }
-            console.log(error);
         }).finally(() => {
             setIsLoading(false);
             setPassword("");
