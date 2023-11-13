@@ -63,6 +63,14 @@ public class AppUserService {
         return saveAppUser(appUser);
     }
 
+    public boolean usernameAlreadyExists(String username) {
+        return appUserRepository.existsAppUserByUsernameEqualsIgnoreCase(username);
+    }
+
+    public boolean emailAlreadyExists(String email) {
+        return appUserRepository.existsAppUserByEmailEqualsIgnoreCase(email);
+    }
+
     public List<String> getFavoritePokemonCards() {
         return getLoggedInUser().getFavoritePokemonCardIds();
     }

@@ -29,7 +29,7 @@ export default function Home() {
                 <Typography variant="h4" color="primary.main">This is a work in progress.</Typography>
                 <Typography paragraph color="primary.main">
                     This is a project to simulate the Pokemon TCG. It is currently in the early stages of development.
-                    For now, you can only <Link href={"/login"}>register</Link>, <Link href={"/login"}>login</Link>,
+                    For now, you can only <Link href={"/register"}>register</Link>, <Link href={"/login"}>login</Link>,
                     search for <Link href={"/cards"}>Cards</Link> and add them as favorites.
                 </Typography>
                 <Box component="div">

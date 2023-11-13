@@ -5,6 +5,10 @@ import ResponsiveAppBar from "./components/app-bar/ResponsiveAppBar.tsx";
 import Box from "@mui/material/Box";
 import {createTheme, CssBaseline, ThemeProvider} from "@mui/material";
 import Home from "./pages/Home.tsx";
+import Login from "./components/login/Login.tsx";
+import {useEffect, useState} from "react";
+import axios from "axios";
+import Register from "./components/login/Register.tsx";
 
 const darkTheme = createTheme({
     palette: {
@@ -13,6 +17,27 @@ const darkTheme = createTheme({
 });
 
 export default function App() {
+    const [appUser, setAppUser] = useState<AppUser | null | undefined>(undefined);
+    const [isLoading, setIsLoading] = useState(false);
+
+    function getMe() {
+        setIsLoading(true)
+        axios.get("/api/v1/auth/me")
+            .then((response) => {
+                setAppUser(response.data);
+            })
+            .catch((error) => {
+                setAppUser(null)
+                console.log(error)
+            })
+            .finally(() => setIsLoading(false));
+    }
+
+    useEffect(() => {
+        getMe();
+    }, []);
+
+    if (isLoading) return <></>;
 
     return (
         <>
@@ -27,9 +52,11 @@ export default function App() {
                     margin: 0,
                     gap: 2,
                 }}>
-                    <ResponsiveAppBar/>
+                    <ResponsiveAppBar handleGetMe={getMe} appUser={appUser}/>
                     <Routes>
                         <Route path="/" element={<Home/>}/>
+                        <Route path="/login" element={<Login handleGetMe={getMe} appUser={appUser}/>}/>
+                        <Route path="/register" element={<Register appUser={appUser}/>}/>
                     </Routes>
                 </Box>
             </ThemeProvider>
@@ -47,4 +74,13 @@ export default function App() {
             />
         </>
     )
+}
+
+export type AppUser = {
+    id: string,
+    username: string,
+    email: string,
+    role: string,
+    registrationDate: string,
+    favoritePokemonCardIds: string[],
 }

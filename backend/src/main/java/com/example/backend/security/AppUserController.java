@@ -38,4 +38,19 @@ public class AppUserController {
         return appUserService.getFavoritePokemonCards();
     }
 
+    @GetMapping("/check-user")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean usernameAlreadyExists(
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String email
+    ) {
+        if (username != null) {
+            return appUserService.usernameAlreadyExists(username);
+        } else if (email != null) {
+            return appUserService.emailAlreadyExists(email);
+        } else {
+            throw new IllegalArgumentException("Either username or email must be provided");
+        }
+    }
+
 }
