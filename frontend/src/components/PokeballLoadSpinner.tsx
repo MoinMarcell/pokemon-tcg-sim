@@ -10,6 +10,7 @@ export default function PokeballLoadSpinner() {
                 alignItems: 'center',
                 width: '100%',
                 height: '100vh',
+                backgroundColor: 'rgba(0,0,0,0.8)',
             }}
             component="div"
         >
