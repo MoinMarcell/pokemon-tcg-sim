@@ -4,8 +4,8 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import {faDiscord, faGithub} from "@fortawesome/free-brands-svg-icons";
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {Link} from "@mui/material";
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {Link} from "react-router-dom";
 
 export default function Home() {
     return (
@@ -29,8 +29,8 @@ export default function Home() {
                 <Typography variant="h4" color="primary.main">This is a work in progress.</Typography>
                 <Typography paragraph color="primary.main">
                     This is a project to simulate the Pokemon TCG. It is currently in the early stages of development.
-                    For now, you can only <Link href={"/register"}>register</Link>, <Link href={"/login"}>login</Link>,
-                    search for <Link href={"/cards"}>Cards</Link> and add them as favorites.
+                    For now, you can only <Link to={"/register"}>register</Link>, <Link to={"/login"}>login</Link>,
+                    search for <Link to={"/cards"}>Cards</Link> and add them as favorites.
                 </Typography>
                 <Box component="div">
                     <Tooltip title="GitHub" arrow>
