@@ -35,12 +35,12 @@ export default function Home() {
                 <Box component="div">
                     <Tooltip title="GitHub" arrow>
                         <IconButton
-                            onClick={() => window.open("https://github.com/MoinMarcell/pokemon-tcg-sim", '_blank')}>
+                            onClick={() => window.open("https://github.com/MoinMarcell/pokemon-tcg-sim", '_blank', "noopener")}>
                             <FontAwesomeIcon icon={faGithub}/>
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Discord" arrow>
-                        <IconButton onClick={() => window.open("https://discord.gg/cf8EebFKxU", '_blank')}>
+                        <IconButton onClick={() => window.open("https://discord.gg/cf8EebFKxU", '_blank', "noopener")}>
                             <FontAwesomeIcon icon={faDiscord}/>
                         </IconButton>
                     </Tooltip>
