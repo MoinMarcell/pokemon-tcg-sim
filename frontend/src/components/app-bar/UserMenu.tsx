@@ -75,7 +75,7 @@ export default function UserMenu(props: Readonly<UserMenuProps>) {
                     horizontal: 'right',
                 }}
                 open={Boolean(props.openUserMenu)}
-                onClose={() => props.handleCloseUserMenu}
+                onClose={() => props.handleCloseUserMenu()}
             >
                 <MenuItem onClick={() => props.handleCloseUserMenu("/")}>
                     <Typography textAlign="center">My favorite cards</Typography>

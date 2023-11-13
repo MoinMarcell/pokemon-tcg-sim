@@ -38,7 +38,7 @@ export default function MobileMenu(props: Readonly<MobileMenuProps>) {
                     horizontal: 'left',
                 }}
                 open={Boolean(props.openMobileMenu)}
-                onClose={() => props.handleCloseNavMenu}
+                onClose={() => props.handleCloseNavMenu()}
                 sx={{
                     display: {xs: 'block', md: 'none'},
                 }}
