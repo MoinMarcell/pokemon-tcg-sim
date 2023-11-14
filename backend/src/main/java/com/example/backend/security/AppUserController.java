@@ -4,8 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -20,27 +19,9 @@ public class AppUserController {
         return appUserService.registerNewAppUser(appUserRequest);
     }
 
-    @PatchMapping("/add-favorite/{cardId}")
-    @ResponseStatus(HttpStatus.OK)
-    public AppUserResponse addFavoritePokemonCard(@PathVariable String cardId) {
-        return appUserService.addFavoritePokemonCardId(cardId);
-    }
-
-    @PatchMapping("/remove-favorite/{cardId}")
-    @ResponseStatus(HttpStatus.OK)
-    public AppUserResponse removeFavoritePokemonCard(@PathVariable String cardId) {
-        return appUserService.deleteFavoritePokemonCardId(cardId);
-    }
-
-    @GetMapping("/favorites")
-    @ResponseStatus(HttpStatus.OK)
-    public List<String> getFavoritePokemonCards() {
-        return appUserService.getFavoritePokemonCards();
-    }
-
     @GetMapping("/check-user")
     @ResponseStatus(HttpStatus.OK)
-    public boolean usernameAlreadyExists(
+    public boolean usernameOrEmailAlreadyExist(
             @RequestParam(required = false) String username,
             @RequestParam(required = false) String email
     ) {
@@ -49,7 +30,7 @@ public class AppUserController {
         } else if (email != null) {
             return appUserService.emailAlreadyExists(email);
         } else {
-            throw new IllegalArgumentException("Either username or email must be provided");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Either username or email must be provided");
         }
     }
 

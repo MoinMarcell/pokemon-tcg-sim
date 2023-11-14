@@ -7,7 +7,7 @@ type PokemonImageProps = {
     appUser: AppUser | null | undefined;
 }
 
-export default function PokemonImageListItem(props: Readonly<PokemonImageProps>) {
+export default function PokemonCardGridItem(props: Readonly<PokemonImageProps>) {
     return (
         <Grid item xs={8} md={4} lg={2}>
             <CardMedia

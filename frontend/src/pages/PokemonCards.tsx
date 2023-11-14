@@ -1,5 +1,5 @@
 import {PokemonCard} from "../components/pokemon-cards/PokemonTypes.ts";
-import PokemonImageList from "../components/pokemon-cards/PokemonImageList.tsx";
+import PokemonCardsGrid from "../components/pokemon-cards/PokemonCardsGrid.tsx";
 import axios from "axios";
 import {useEffect, useState} from "react";
 import {AppUser} from "../App.tsx";
@@ -26,7 +26,7 @@ export default function PokemonCards(props: Readonly<PokemonCardsProps>) {
     }
 
     useEffect(() => {
-        if ((props.appUser === undefined || props.appUser === null) && !props.isLoading) {
+        if (!props.appUser && !props.isLoading) {
             navigate("/login");
             toast.error("To view Cards, you must be logged in.");
         } else {
@@ -36,5 +36,5 @@ export default function PokemonCards(props: Readonly<PokemonCardsProps>) {
 
     if (isLoading || props.isLoading) return <PokeballLoadSpinner/>;
 
-    return <PokemonImageList appUser={props.appUser} pokemonCards={pokemonCards}/>;
+    return <PokemonCardsGrid appUser={props.appUser} pokemonCards={pokemonCards}/>;
 }

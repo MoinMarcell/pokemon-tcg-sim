@@ -1,5 +1,5 @@
 import {PokemonCard} from "./PokemonTypes.ts";
-import PokemonImageListItem from "./PokemonImageListItem.tsx";
+import PokemonCardGridItem from "./PokemonCardGridItem.tsx";
 import Box from "@mui/material/Box";
 import {AppUser} from "../../App.tsx";
 import {Grid} from "@mui/material";
@@ -9,10 +9,10 @@ type PokemonImageListProps = {
     appUser: AppUser | null | undefined;
 }
 
-export default function PokemonImageList(props: Readonly<PokemonImageListProps>) {
+export default function PokemonCardsGrid(props: Readonly<PokemonImageListProps>) {
     const cards = props
         .pokemonCards
-        .map((card) => <PokemonImageListItem key={card.id} appUser={props.appUser} pokemonCard={card}/>);
+        .map((card) => <PokemonCardGridItem key={card.id} appUser={props.appUser} pokemonCard={card}/>);
 
     return (
         <Box
