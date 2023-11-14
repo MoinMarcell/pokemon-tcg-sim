@@ -1,3 +1,12 @@
+export type PokemonApiResponse = {
+    pokemonCards: PokemonCard[],
+    page: number,
+    pages: number,
+    pageSize: number,
+    cardsFound: number,
+    totalCards: string
+}
+
 export type PokemonCard = {
     id: string,
     name: string,
@@ -20,7 +29,7 @@ export type PokemonCard = {
 type PokemonAbility = {
     name: string,
     text: string,
-    type: string,
+    type: string
 }
 
 type PokemonAttack = {
@@ -28,20 +37,20 @@ type PokemonAttack = {
     cost: string[],
     convertedEnergyCost: string,
     damage: string,
-    text: string,
+    text: string
 }
 
 type PokemonWeakness = {
     type: string,
-    value: string,
+    value: string
 }
 
 type PokemonResistance = {
     type: string,
-    value: string,
+    value: string
 }
 
 type PokemonImage = {
     small: string,
-    large: string,
+    large: string
 }

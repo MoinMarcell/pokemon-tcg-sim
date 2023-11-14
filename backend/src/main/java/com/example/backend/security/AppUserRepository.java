@@ -10,4 +10,8 @@ public interface AppUserRepository extends MongoRepository<AppUser, String> {
 	Optional<AppUser> findAppUserByUsername(String username);
 
 	boolean existsAppUserByEmailEqualsIgnoreCaseOrUsernameEqualsIgnoreCase(String email, String username);
+
+    boolean existsAppUserByUsername(String username);
+
+    boolean existsAppUserByEmail(String email);
 }

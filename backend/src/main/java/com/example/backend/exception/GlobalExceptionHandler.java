@@ -15,6 +15,12 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(ApiException.class)
+    @ResponseStatus(HttpStatus.BAD_GATEWAY)
+    public String handleApiException(ApiException exception) {
+        return exception.getMessage();
+    }
+
 	@ExceptionHandler(UsernameOrEmailAlreadyExistException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public String handleUsernameOrEmailAlreadyExistException(UsernameOrEmailAlreadyExistException exception) {

@@ -51,20 +51,12 @@ public class AppUserService {
         );
     }
 
-    public AppUserResponse addFavoritePokemonCardId(String pokemonCardId) {
-        AppUser appUser = getLoggedInUser();
-        appUser.getFavoritePokemonCardIds().add(pokemonCardId);
-        return saveAppUser(appUser);
+    public boolean usernameAlreadyExists(String username) {
+        return appUserRepository.existsAppUserByUsername(username);
     }
 
-    public AppUserResponse deleteFavoritePokemonCardId(String pokemonCardId) {
-        AppUser appUser = getLoggedInUser();
-        appUser.getFavoritePokemonCardIds().remove(pokemonCardId);
-        return saveAppUser(appUser);
-    }
-
-    public List<String> getFavoritePokemonCards() {
-        return getLoggedInUser().getFavoritePokemonCardIds();
+    public boolean emailAlreadyExists(String email) {
+        return appUserRepository.existsAppUserByEmail(email);
     }
 
     private AppUser getLoggedInUser() {

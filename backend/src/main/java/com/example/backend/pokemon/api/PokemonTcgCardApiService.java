@@ -1,11 +1,10 @@
 package com.example.backend.pokemon.api;
 
-import com.example.backend.pokemon.model.PokemonCard;
+import com.example.backend.exception.ApiException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -19,26 +18,24 @@ public class PokemonTcgCardApiService {
         webClient = WebClient.builder().baseUrl(url).build();
     }
 
-    public List<PokemonCard> fetchCardsByName(String name) {
-        return fetchCardsByName(name, 1);
-    }
-
-    public List<PokemonCard> fetchCardsByName(String name, int page) {
+    public PokemonTcgApiResponse fetchAllCards(int page) {
         PokemonTcgApiResponse response = Objects.requireNonNull(webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .queryParam("q", "name:" + name)
-                        .queryParam("orderBy", "name")
                         .queryParam("pageSize", 20)
-                        .queryParam("page", page)
+                        .queryParam("page", Math.max(page, 1))
                         .build())
                 .header("X-Api-Key", apiKey)
                 .retrieve()
                 .toEntity(PokemonTcgApiResponse.class)
                 .block()).getBody();
-        assert response != null;
-        if (!response.data().isEmpty()) {
-            return response.data();
+
+        if (response != null) {
+            if (!response.pokemonCards().isEmpty()) {
+                return response.withPages((int) Math.ceil(Double.parseDouble(response.totalCards()) / response.pageSize()));
+            }
+            throw new NoCardFoundException("No cards found");
         }
-        throw new NoCardFoundException("No card(s) found");
+
+        throw new ApiException("Something went wrong while fetching the cards");
     }
 }

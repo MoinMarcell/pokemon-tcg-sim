@@ -1,57 +1,67 @@
-import {useEffect, useState} from "react";
-import {AppUser} from "./models/AppUser.ts";
-import axios from "axios";
-import {Route, Routes, useNavigate} from "react-router-dom";
-import ProtectedRoutes from "./util/ProtectedRoutes.tsx";
-import PreRegistrationSuccess from "./protected/PreRegistrationSuccess.tsx";
-import LoginRegisterPage from "./pages/LoginRegisterPage.tsx";
+import {Route, Routes} from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
-import {toast, ToastContainer} from "react-toastify";
+import {ToastContainer} from "react-toastify";
+import ResponsiveAppBar from "./components/app-bar/ResponsiveAppBar.tsx";
+import Box from "@mui/material/Box";
+import {createTheme, CssBaseline, ThemeProvider} from "@mui/material";
+import Home from "./pages/Home.tsx";
+import Login from "./components/login/Login.tsx";
+import {useEffect, useState} from "react";
+import axios from "axios";
+import Register from "./components/login/Register.tsx";
+import PokemonCards from "./pages/PokemonCards.tsx";
+import PokeballLoadSpinner from "./components/PokeballLoadSpinner.tsx";
+
+const darkTheme = createTheme({
+    palette: {
+        mode: 'dark',
+    },
+});
 
 export default function App() {
-    const [appUser, setAppUser] = useState<AppUser | undefined>(undefined);
+    const [appUser, setAppUser] = useState<AppUser | null | undefined>(undefined);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const navigate = useNavigate();
-
-    function login(username: string, password: string) {
-        axios.post("/api/v1/auth/login", {}, {
-            auth: {
-                username: username,
-                password: password
-            }
-        }).then((response) => {
-            setAppUser(response.data);
-            navigate("/success");
-            toast.success("Welcome back, " + username + "!");
-        }).catch((e) => {
-            if (e.response.status == 401) {
-                toast.error("Invalid username or password.")
-            } else {
-                toast.error("Something went wrong. Try again later.")
-            }
-            navigate("/");
-        })
+    function getMe() {
+        setIsLoading(true)
+        axios.get("/api/v1/auth/me")
+            .then((response) => {
+                setAppUser(response.data);
+            })
+            .catch(() => {
+                setAppUser(null)
+            })
+            .finally(() => setIsLoading(false));
     }
 
     useEffect(() => {
-        axios.get("/api/v1/auth/me").then((response) => {
-            setAppUser(response.data);
-            if(response.status === 200) {
-                navigate("/success");
-            }
-        }).catch(() => {
-            navigate("/");
-        });
-    }, [navigate]);
+        getMe();
+    }, []);
+
+    if (isLoading) return <PokeballLoadSpinner/>;
 
     return (
         <>
-            <Routes>
-                <Route path={"/"} element={<LoginRegisterPage login={login}/>}/>
-                <Route element={<ProtectedRoutes appUser={appUser}/>}>
-                    <Route path={"/success"} element={<PreRegistrationSuccess appUser={appUser}/>}/>
-                </Route>
-            </Routes>
+            <ThemeProvider theme={darkTheme}>
+                <CssBaseline/>
+                <Box component="div" sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100vh',
+                    width: '100vw',
+                    padding: 0,
+                    margin: 0,
+                    gap: 2,
+                }}>
+                    <ResponsiveAppBar handleGetMe={getMe} appUser={appUser}/>
+                    <Routes>
+                        <Route path="/" element={<Home/>}/>
+                        <Route path="/login" element={<Login handleGetMe={getMe} appUser={appUser}/>}/>
+                        <Route path="/register" element={<Register appUser={appUser}/>}/>
+                        <Route path="/cards" element={<PokemonCards appUser={appUser} isLoading={isLoading}/>}/>
+                    </Routes>
+                </Box>
+            </ThemeProvider>
             <ToastContainer
                 position="top-right"
                 autoClose={5000}
@@ -66,4 +76,13 @@ export default function App() {
             />
         </>
     )
+}
+
+export type AppUser = {
+    id: string,
+    username: string,
+    email: string,
+    role: string,
+    registrationDate: string,
+    favoritePokemonCardIds: string[],
 }

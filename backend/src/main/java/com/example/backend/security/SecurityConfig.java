@@ -2,6 +2,7 @@ package com.example.backend.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,7 +29,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeHttpRequests ->
                         authorizeHttpRequests
                                 .requestMatchers("/api/v1/auth/**").permitAll()
-                                .requestMatchers("/api/v1/users/register").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/v1/users/register").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/users/check-user/**").permitAll()
                                 .requestMatchers(RegexRequestMatcher.regexMatcher("^(?!/api).*$")).permitAll()
                                 .anyRequest().authenticated()
                 )
